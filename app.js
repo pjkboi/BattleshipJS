@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     const computerGrid = document.querySelector('.grid-computer');
     const displayGrid = document.querySelector('.grid-display');
     const ships = document.querySelectorAll('.ship');
-    const destroyer = document.querySelector('.destoyer-container');
+    const destroyer = document.querySelector('.destroyer-container');
     const submarine = document.querySelector('.submarine-container');
     const cruiser = document.querySelector('.cruiser-container');
     const battleship = document.querySelector('.battleship-container');
@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     const infoDisplay = document.querySelector('#info');
     const userSquares = [];
     const computerSquares = [];
+    let isHorizontal = true;
     const width = 10;
 
 
@@ -71,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     //Draw the computer ships in random locations
     function generate(ship){
-        console.log(ship);
         let randomDirection = Math.floor(Math.random() * ship.directions.length);
         let current = ship.directions[randomDirection];
         if(randomDirection === 0 ){
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () =>{
             direction = 10;
         }
         let randomStart = Math.abs(Math.floor(Math.random() * computerSquares.length - ship.directions[0].length * direction));
-        console.log(computerSquares);
         const isTaken = current.some(index => computerSquares[randomStart + index].classList.contains('taken'));
         const isAtRightEdge = current.some(index => (randomStart + index) % width === width-1);
         const isAtLeftEdge = current.some(index => (randomStart + index) % width === 0);
@@ -101,6 +100,18 @@ document.addEventListener('DOMContentLoaded', () =>{
     generate(shipArray[3]);
     generate(shipArray[4]);
 
-
+    //rotate function
+    function rotate(){
+        if(isHorizontal != !isHorizontal){
+            destroyer.classList.toggle('destroyer-container-vertical');
+            submarine.classList.toggle('submarine-container-vertical');
+            cruiser.classList.toggle('cruiser-container-vertical');
+            battleship.classList.toggle('battleship-container-vertical');
+            carrier.classList.toggle('carrier-container-vertical');
+            isHorizontal = !isHorizontal;
+            return
+        }
+    }
+    rotateButton.addEventListener('click', rotate);
 
 });
