@@ -153,7 +153,27 @@ document.addEventListener('DOMContentLoaded', () =>{
         let shipNameWithLastId = draggedShip.lastChild.id;
         let shipClass = shipNameWithLastId.slice(0, -2);
 
-        console.log(shipClass);
+        let lastShipIndex = parseInt(shipNameWithLastId.substr(-1));
+        let shipLastId = lastShipIndex + parseInt(this.dataset.id);
+        const notAllowedHorrizontal = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 1, 11, 21, 31, 41, 51, 61, 71, 81, 91]
+        selectedShipIndex = parseInt(selectedShipNameWithIndex.substr(-1));
+
+        shipLastId = shipLastId - selectedShipIndex;
+
+        if(isHorizontal){
+            for(let i = 0; i<draggedShipLength; i++){
+                userSquares[parseInt(this.dataset.id) - selectedShipIndex + i].classList.add('taken', shipClass);
+            }
+        }
+        else if(!isHorizontal){
+            for(let i = 0; i<draggedShipLength; i++){
+                userSquares[parseInt(this.dataset.id) -selectedShipIndex + width*i].classList.add('taken', shipClass);
+            }
+        }
+        else{
+            return;
+        }
+        displayGrid.removeChild(draggedShip);
     }
     function dragEnd(){
 
