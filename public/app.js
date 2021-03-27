@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () =>{
     const rotateButton = document.querySelector('#rotate');
     const turnDisplay = document.querySelector('#whose-go');
     const infoDisplay = document.querySelector('#info');
+    const singerPlayerButton = document.querySelector('singlePlayerButton');
+    const multiplayerButton = document.querySelector('multiplayerButton'); 
     const userSquares = [];
     const computerSquares = [];
     let isHorizontal = true;
@@ -25,13 +27,41 @@ document.addEventListener('DOMContentLoaded', () =>{
     let allShipsPlaced = false;
     let shotFired = -1;
 
-    const socket = io();
-    //get your player number
-    socket.on('player-number', num => {
-        if(num === -1){
-            infoDisplay.innerHTML = "Sorry the game is full";
-        }
-    });
+    // Select Player Mode 
+    singerPlayerButton.addEventListener('click', startSinglePlayer);
+    multiplayerButton.addEventListener('click', startMuliplayer);
+
+    //Multiplayer
+    function startMuliplayer(){
+        gameMode = "multiplayer";
+        const socket = io();
+        //get your player number
+        socket.on('player-number', num => {
+            if(num === -1){
+                infoDisplay.innerHTML = "Sorry the game is full";
+            }
+            else{
+                playerNum = parseInt(num);
+                if(playerNum === 1){
+                    currentPlayer = 'enemy';
+                }
+                console.log(playerNum);
+            }
+        });
+    }
+
+    //Singleplayer
+    function startSinglePlayer(){
+        gameMode = "singlePlayer";
+
+        generate(shipArray[0]);
+        generate(shipArray[1]);
+        generate(shipArray[2]);
+        generate(shipArray[3]);
+        generate(shipArray[4]);
+
+        startButton.addEventListener('click', playGameSingle);
+    }
 
     //Creating the board
     function createBoard(grid, squares){
@@ -109,11 +139,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
     }
 
-    generate(shipArray[0]);
-    generate(shipArray[1]);
-    generate(shipArray[2]);
-    generate(shipArray[3]);
-    generate(shipArray[4]);
+
 
     //rotate function
     function rotate(){
@@ -199,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
 
     //Game Logic
-    function playGame(){
+    function playGameSingle(){
         if(isGameOver){
             return;
         }
@@ -214,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () =>{
             setTimeout(computerGo, 1000);
         }
     }
-    startButton.addEventListener('click', playGame);
+    
 
     let destroyerCount = 0;
     let submarineCount = 0;
@@ -249,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () =>{
             square.classList.add('miss');
         }
         currentPlayer = 'computer';
-        playGame();
+        playGameSingle();
     }
 
     let cpuDestroyerCount = 0;
@@ -344,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     function gameOver(){
         isGameOver = true;
-        startButton.removeEventListener('click', playGame);
+        startButton.removeEventListener('click', playGameSingle);
     }
 
 
