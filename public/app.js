@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () =>{
     const rotateButton = document.querySelector('#rotate');
     const turnDisplay = document.querySelector('#whose-go');
     const infoDisplay = document.querySelector('#info');
-    const singerPlayerButton = document.querySelector('singlePlayerButton');
-    const multiplayerButton = document.querySelector('multiplayerButton'); 
+    const singlePlayerButton = document.querySelector('#singlePlayerButton');
+    const multiplayerButton = document.querySelector('#multiplayerButton'); 
     const userSquares = [];
     const computerSquares = [];
     let isHorizontal = true;
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     let shotFired = -1;
 
     // Select Player Mode 
-    singerPlayerButton.addEventListener('click', startSinglePlayer);
+    singlePlayerButton.addEventListener('click', startSinglePlayer);
     multiplayerButton.addEventListener('click', startMuliplayer);
 
     //Multiplayer
@@ -48,10 +48,28 @@ document.addEventListener('DOMContentLoaded', () =>{
                 console.log(playerNum);
             }
         });
+        
+        //Another player has connected or disconnected
+        socket.on('player-connection', num => {
+            console.log(`Player number ${num} has connected or disconnected`);
+            playerConnectedOrDisconnected(num);
+        })
+
+        function playerConnectedOrDisconnected(num){
+            let player = `.p${parseInt(num) + 1}`;
+            document.querySelector(`${player} .connected span`).classList.toggle('green');
+            if(parseInt(num) === playerNum){
+                document.querySelector(player).style.fontWeight = 'bold';
+            }
+        }
     }
+
+    
+
 
     //Singleplayer
     function startSinglePlayer(){
+        console.log("hello")
         gameMode = "singlePlayer";
 
         generate(shipArray[0]);

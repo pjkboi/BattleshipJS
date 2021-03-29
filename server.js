@@ -37,4 +37,17 @@ io.on('connection', socket => {
     if(playerIndex === -1){
         return;
     }
+
+    connections[playerIndex] = false;
+
+    //what player has connected 
+    socket.broadcast.emit('player-connection', playerIndex);
+
+    //Handle Disconnect
+    socket.on('disconnect', () =>{
+        console.log(`Player ${playerIndex} disconnected`);
+        connections[playerIndex] = null;
+        //who disconnected?
+        socket.broadcast.emit('player-connection', playerIndex);
+    })
 });
