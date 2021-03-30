@@ -49,5 +49,42 @@ io.on('connection', socket => {
         connections[playerIndex] = null;
         //who disconnected?
         socket.broadcast.emit('player-connection', playerIndex);
-    })
+    });
+
+    //On ready 
+    socket.on('player-ready', () => {
+        socket.broadcast.emit('enemy-ready', playerIndex);
+        connections[playerIndex] = true;
+    });
+
+    //Check player connections
+    socket.on('check-players', () => {
+        const players = [];
+        for(const i in connections){
+            connections[i] === null ? players.push({connected: false, ready: false}) : players.push({connected: true, ready: connections[i]});
+        }
+        socket.emit('check-players', players);
+    });
+
+    //On fire receive
+    socket.on('fire', id => {
+        console.log(`Shot fired from ${playerIndex}`, id);
+        //emit to other player
+        socket.broadcast.emit('fire', id);
+    });
+
+    //On fire reply 
+    socket.on('fire-reply', square => {
+        console.log(square);
+
+        //forward to other player
+        socket.broadcast.emit('fire-reply', square);
+    });
+
+    //set timeout connection
+    // setTimeout(() => {
+    //     connections[playerIndex] = null;
+    //     socket.emit('timeout');
+    //     socket.disconnect();
+    // }, 600000) // 10 min limit per player
 });
